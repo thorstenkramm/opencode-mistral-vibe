@@ -1,0 +1,38 @@
+{
+  "name": "opencode-mistral-vibe",
+  "version": "0.1.0",
+  "description": "OpenCode v2 plugin that uses the Mistral API key from Mistral Vibe, no separate setup needed.",
+  "keywords": [
+    "opencode",
+    "plugin",
+    "mistral",
+    "vibe"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "test": "node --test --experimental-strip-types src/*.test.ts",
+    "prepare": "npm run build"
+  },
+  "peerDependencies": {
+    "@opencode/plugin": ">=2.0.22"
+  },
+  "devDependencies": {
+    "@opencode/plugin": "^2.0.22",
+    "@types/node": "^26.6.4",
+    "typescript": "^7.0.2"
+  }
+}
