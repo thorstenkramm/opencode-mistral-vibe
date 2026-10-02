@@ -18,6 +18,7 @@ OpenCode v2 plugin that uses the Mistral API key from [Mistral Vibe](https://mis
 - Adds `Authorization: Bearer <key>` to Mistral requests at send time. The key is never written to OpenCode config, credentials or provider settings, so it doesn't appear in `/api/model` or `/api/provider` responses.
 - Sends the OpenCode session ID as `x-affinity`, as Vibe does, so related requests can reuse Mistral's prompt cache.
 - Rereads the key at most once a minute, so running `vibe --setup` again takes effect without a restart.
+- Makes context overflows recoverable. Mistral rejects oversized prompts with `Prompt 264620 > 262144 maximum context length`, wording OpenCode doesn't recognize, so OpenCode would show the error instead of compacting. The plugin rewrites that response into the standard `context_length_exceeded` form, and OpenCode then compacts the conversation and retries. This matters most when you switch a long session from a model with a bigger window (such as Claude) to Mistral, whose models have a 256k window.
 
 If you've connected your own Mistral API key in OpenCode, through the UI or `MISTRAL_API_KEY`, that key is used and the plugin leaves the request alone.
 

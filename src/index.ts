@@ -1,6 +1,7 @@
 import { Plugin } from "@opencode/plugin"
 import { createKeyCache, readVibeKey } from "./key.ts"
 import { PROVIDER_ID, withVibeModels } from "./models.ts"
+import { rewriteOverflowResponse } from "./overflow.ts"
 
 export { readVibeKey } from "./key.ts"
 export { VIBE_MODELS, withVibeModels } from "./models.ts"
@@ -38,6 +39,15 @@ export default Plugin.define({
         event.headers.authorization = `Bearer ${vibe.key}`
         // Vibe sends the session ID so related requests hit the same prompt cache.
         event.headers["x-affinity"] ??= event.sessionID
+      },
+      { providerID: PROVIDER_ID },
+    )
+
+    await ctx.session.hook(
+      "http.response",
+      async (event) => {
+        const rewritten = await rewriteOverflowResponse(event.response)
+        if (rewritten) event.response = rewritten
       },
       { providerID: PROVIDER_ID },
     )
